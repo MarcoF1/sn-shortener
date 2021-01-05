@@ -1,31 +1,33 @@
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const session = require('express-session');
-const cors = require('cors');
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const session = require("express-session");
+const cors = require("cors");
 
 // import all the express routes we will be using
-const indexRouter = require('./routes/index');
-const shortsRouter = require('./routes/shorts');
-const usersRouter = require('./routes/users');
-const sessionRouter = require('./routes/session');
+const indexRouter = require("./routes/index");
+const shortsRouter = require("./routes/shorts");
+const usersRouter = require("./routes/users");
+const sessionRouter = require("./routes/session");
 
 // create our app
 const app = express();
 
 // set up user session
-app.use(session({
-  secret: 'URL-shortener',
-  resave: true,
-  saveUninitialized: true
-}));
+app.use(
+  session({
+    secret: "URL-shortener",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 // allows us to make requests from POSTMAN
 app.use(cors());
 
 // set up the app to use dev logger
-app.use(logger('dev'));
+app.use(logger("dev"));
 
 // accept json
 app.use(express.json());
@@ -38,16 +40,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // server html+css+js frontend
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "dist")));
 
 // connect url hierarchies to our routers
-app.use('/', indexRouter);
-app.use('/api/shorts', shortsRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/users/session', sessionRouter);
+app.use("/", indexRouter);
+app.use("/api/shorts", shortsRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/users/session", sessionRouter);
 
-app.use('*', function (req, res) {
-  res.redirect('/').end();
+app.use("*", function(req, res) {
+  res.redirect("/").end();
 });
 
 console.log("Running on localhost:3000...");
