@@ -1,55 +1,61 @@
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const session = require('express-session');
-const cors = require('cors');
+// Load the dotfiles.
+require('dotenv').load();
 
-// import all the express routes we will be using
-const indexRouter = require('./routes/index');
-const shortsRouter = require('./routes/shorts');
-const usersRouter = require('./routes/users');
-const sessionRouter = require('./routes/session');
+var port = process.env.PORT || 3000;
+var redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379/0';
+var sessionSecret = process.env.SESSION_SECRET || 'this is really secure';
+var adminUsername = process.env.ADMIN_USERNAME || 'admin';
+var adminPassword = process.env.ADMIN_PASSWORD || '123456';
+var rootRedirect = process.env.ROOT_REDIRECT || 'https://google.com';
+var apiToken = process.env.API_TOKEN || '1234567890abcdefghijklmnopqrstuvwxyz';
 
-// create our app
-const app = express();
+//Includes
+var authentication = require('./authentication');
+var express = require('express');
+var expressSession = require('express-session');
+var cookieParser = require('cookie-parser');
+var Redis = require('ioredis');
+var passport = require('passport');
+var favicon = require('serve-favicon');
+var RedisStore = require('connect-redis')(expressSession);
 
-// set up user session
-app.use(session({
-  secret: 'URL-shortener',
-  resave: true,
-  saveUninitialized: true
-}));
+//Initialize auth
+authentication(passport, adminUsername, adminPassword);
 
-// allows us to make requests from POSTMAN
-app.use(cors());
+//Connect to Redis
+var redis = new Redis(redisUrl);
 
-// set up the app to use dev logger
-app.use(logger('dev'));
-
-// accept json
-app.use(express.json());
-
-// https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0
-// allows object nesting in POST
-app.use(express.urlencoded({ extended: false }));
-
-// cookies for sessions
+//Initialize the app
+var app = express();
+var redisSessionStore = new RedisStore({client: redis});
+app.set('views', './views');
+app.set('view engine', 'jade');
+app.use(favicon('./public/assets/favicon.png'));
 app.use(cookieParser());
+app.use(expressSession({ store: redisSessionStore, secret: sessionSecret, resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-// server html+css+js frontend
-app.use(express.static(path.join(__dirname, 'public')));
+//Initialize controllers
+var frontendController = require('./controllers/admin/FrontendController')(redis, passport);
+var apiController = require('./controllers/admin/APIController')(redis, apiToken);
+var redirectController = require('./controllers/RedirectController')(redis);
 
-// connect url hierarchies to our routers
-app.use('/', indexRouter);
-app.use('/api/shorts', shortsRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/users/session', sessionRouter);
-
-app.use('*', function (req, res) {
-  res.redirect('/').end();
+//Initialize routes
+var admin = require('./routes/admin.js')(frontendController, apiController);
+app.use('/admin', admin);
+var main = require('./routes/main.js')(rootRedirect, redirectController);
+app.use('/', main);
+app.use(function(req, res, next) {
+  res.status(404).render('404');
 });
 
-console.log("Running on localhost:3000...");
+// Start the server
+console.log('Connecting to redis...');
+redis.ping(function(err){
+  if (!err) {
+    console.log('Connection successful. Server listening on port ' + port);
+    app.listen(port);
+  }
+});
 
-module.exports = app;
