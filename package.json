@@ -36,8 +36,10 @@
     "ioredis": "^4.11.2",
     "jade": "^1.11.0",
     "morgan": "^1.6.1",
+    "node-gyp": "^7.1.2",
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
+    "rebuild": "^0.1.2",
     "serve-favicon": "^2.3.0"
   }
 }
