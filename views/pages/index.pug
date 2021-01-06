@@ -1,25 +1,20 @@
-html
-  head
-    style
-      include ../styles/index.css
-    title MIT Sigma Nu
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
-    script.
-      $(document).ready(function(){
-        $.ajax({type: "GET",url: "/api/shorts", success: function(result){
-          let html = '';
-          for(let index in result) {
-            let short = result[index];
-            html+=`<div> ${index} : ${short.shortName}, ${short.url}</div>`
-          }
-        $("#div1").append(html);
-      }});
-      });
-  body
+extends layout
+
+block content
     .container(class="main")
-      div(class="col")
-        h1 MIT Sigma Nu
-        #div1
-        
-      
-      
+      .col
+        .heading
+          h1 MIT Sigma Nu
+        div
+            table(class="table")
+              thead
+                tr
+                  th(scope="col") route
+                  th(scope="col") redirect 
+              tbody
+                each short in shorts
+                  tr 
+                    td /#{short.shortName}
+                    td #{short.url}
+                  
+
