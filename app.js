@@ -17,6 +17,7 @@ var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views/pages"));
 app.set("view engine", "pug");
+// app.engine("jsx", require("express-react-views").createEngine());
 
 // set up user session
 app.use(
@@ -43,22 +44,28 @@ app.use(express.urlencoded({ extended: false }));
 // cookies for sessions
 app.use(cookieParser());
 
-// server html+css+js frontend
-app.use(express.static(path.join(__dirname, "public")));
-
 app.use("/api/users/session", sessionRouter);
 app.use("/api/shorts", shortsRouter);
 app.use("/api/users", usersRouter);
 app.use("/manager", managerRouter);
 app.use("/", indexRouter);
 
+// server html+css+js frontend
+app.use(express.static(path.join(__dirname, "public")));
+
+// app.use("/api/users/session", sessionRouter);
+// app.use("/api/shorts", shortsRouter);
+// app.use("/api/users", usersRouter);
+// app.use("/manager", managerRouter);
+// app.use("/", indexRouter);
+
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

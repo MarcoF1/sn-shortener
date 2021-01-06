@@ -33,10 +33,23 @@ router.post(
       }
 
       // authenticate and sign the user in
+      if (req.body.password !== user.password) {
+        res
+          .status(503)
+          .json({ message: "Incorrect Username or Password" })
+          .end();
+      }
+
       req.session.uid = user.id;
-      res.status(201).json({ data: user, message: "You are signed in." }).end();
+      res
+        .status(201)
+        .json({ data: { user: user.name }, message: "You are signed in." })
+        .end();
     } catch (error) {
-      res.status(503).json({ error: "Could not sign user in" }).end();
+      res
+        .status(503)
+        .json({ error: "Could not sign user in" })
+        .end();
     }
   }
 );
@@ -50,9 +63,15 @@ router.delete("/", [v.ensureUserLoggedIn], async (req, res) => {
   try {
     // sign out user
     req.session.uid = undefined;
-    res.status(200).json({ message: "Successfuly signed out user!" }).end();
+    res
+      .status(200)
+      .json({ message: "Successfuly signed out user!" })
+      .end();
   } catch (error) {
-    res.status(503).json({ error: "Could not sign user out" }).end();
+    res
+      .status(503)
+      .json({ error: "Could not sign user out" })
+      .end();
   }
 });
 
