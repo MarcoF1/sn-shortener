@@ -10,6 +10,7 @@ var indexRouter = require("./routes/index");
 var managerRouter = require("./routes/manager");
 var usersRouter = require("./routes/users");
 const sessionRouter = require("./routes/session");
+const shortsRouter = require("./routes/shorts");
 
 var app = express();
 
@@ -46,6 +47,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/users/session", sessionRouter);
+app.use("/api/shorts", shortsRouter);
 app.use("/api/users", usersRouter);
 app.use("/manager", managerRouter);
 app.use("/", indexRouter);
