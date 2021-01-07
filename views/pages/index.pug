@@ -4,33 +4,96 @@ block content
     .container(class="main")
       .col
         .heading
-          h1 MIT Sigma Nu
-        div
-            table(class="table")
-              thead
-                tr
-                  th(scope="col") route
-                  th(scope="col") redirect 
-              tbody
-                each short in shorts
-                  tr 
-                    td /#{short.shortName}
-                    td #{short.url}
-        script.
-          $(document).ready(function () {
-            $("form#signOut").on("submit", function (e) {
-              e.preventDefault();
-              $.ajax({
-                type: "delete",
-                url: "/api/users/session",
-              }).done(function (data) {
-                location.reload(true);
+          h1 MIT ΣΝ
+        div(class="parent")
+          script.
+            $(document).ready(function () {
+                $("form#addShort").on("submit", function (e) {
+                e.preventDefault();
+                var short = $("input[name=short]").val();
+                var url = $("input[name=url]").val();
+                $.ajax({
+                    type: "post",
+                    url: "/api/shorts",
+                    data: 
+                        {shortName: short, url: url}, 
+                    dataType: "text",
+                }).done(function (data) {
+                    location.reload(true);
+                });
+                });
+            });
+
+          form(method="post" id="addShort")
+            input(type="text" placeholder="Short" name="short")
+            input(type="text" placeholder="URL" name="url")
+            input(type="submit", value="Add Short")
+
+          table(class="table")
+            thead
+              tr
+                th(scope="col") route
+                th(scope="col") redirect
+                th(scope="col") delete 
+            tbody
+              each short in shorts
+                tr 
+                  td(class="edge") /#{short.shortName}
+                  td(class="center") #{short.url}
+                  td(class="edge")                
+
+                    script.
+                      $(document).ready(function () {
+                        
+                        let short = !{JSON.stringify(short)};
+                        
+                        $(`form#delete${short.shortName}`).on("submit", function (e) {
+                          e.preventDefault();
+                          $.ajax({
+                            type: "delete",
+                            url: `/api/shorts/${short.shortName}`,
+                          }).done(function (data) {
+                            location.reload(true);
+                          });
+                        });
+                      });
+
+                    - var formId = "delete" + short.shortName;
+                    form(method="post" id=formId class="delete")
+                      input(type="submit", value="delete" id="small")
+
+          script.
+            $(document).ready(function () {
+              $("form#signOut").on("submit", function (e) {
+                e.preventDefault();
+                $.ajax({
+                  type: "delete",
+                  url: "/api/users/session",
+                }).done(function (data) {
+                  location.reload(true);
+                });
               });
             });
-          });
 
-        form(method="post" id="signOut")
-          input(type="submit", value="Sign Out")
+          form(method="post" id="signOut")
+            input(type="submit", value="Sign Out")
+
+
+          //- script.
+          //-   $(document).ready(function () {
+          //-     $("form#deletebb").on("submit", function (e) {
+          //-       e.preventDefault();
+          //-       $.ajax({
+          //-         type: "delete",
+          //-         url: "/api/shorts/bb",
+          //-       }).done(function (data) {
+          //-         location.reload(true);
+          //-       });
+          //-     });
+          //-   });
+
+          //- form(method="post" id="deletebb")
+          //-   input(type="submit", value="delete bb")            
               
 
                   

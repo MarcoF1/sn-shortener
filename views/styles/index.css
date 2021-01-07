@@ -9,3 +9,29 @@
 .heading {
   text-align: center;
 }
+
+input {
+  margin: 0 auto;
+}
+
+.parent {
+  text-align: center;
+}
+
+#small {
+  padding: 7.5px 40px;
+}
+
+.delete {
+  height: 5vh;
+  margin: auto;
+  position: relative;
+}
+
+.center {
+  max-width: auto;
+  min-width: auto;
+}
+.edge {
+  width: 50%;
+}
