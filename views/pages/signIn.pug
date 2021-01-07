@@ -1,4 +1,33 @@
 extends layout
 
+
 block content
-  h1 Sign In
+    .div(class="wrapper fadeInDown")
+        .div(id="formContent")
+
+            .div(class="fadeIn first")
+                h1 MIT ΣΝ
+                img(src="https://www.sigmanu.org/file/about-us/merchandise/official-insignia-and-artwork/logos-badge.png" id="icon" alt="Sigma Nu Logo")
+
+            script.
+                $(document).ready(function () {
+                    $("form#signIn").on("submit", function (e) {
+                    e.preventDefault();
+                    var username = $("input[name=username]").val();
+                    var password = $("input[name=password]").val();
+                    $.ajax({
+                        type: "post",
+                        url: "/api/users/session",
+                        data: 
+                            {username: username, password: password}, 
+                        dataType: "text",
+                    }).done(function (data) {
+                        location.reload(true);
+                    });
+                    });
+                });
+
+            form(method="POST" id="signIn")            
+                input(type="text" id="username" class="fadeIn second" name="username" placeholder="username")
+                input(type="text" id="password" class="fadeIn third" name="password" placeholder="password")
+                input(type="submit" class="fadeIn fourth" value="Sign In")

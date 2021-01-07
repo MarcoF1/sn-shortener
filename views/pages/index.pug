@@ -16,5 +16,22 @@ block content
                   tr 
                     td /#{short.shortName}
                     td #{short.url}
+        script.
+          $(document).ready(function () {
+            $("form#signOut").on("submit", function (e) {
+              e.preventDefault();
+              $.ajax({
+                type: "delete",
+                url: "/api/users/session",
+              }).done(function (data) {
+                location.reload(true);
+              });
+            });
+          });
+
+        form(method="post" id="signOut")
+          input(type="submit", value="Sign Out")
+              
+
                   
 
