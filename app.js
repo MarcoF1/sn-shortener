@@ -44,6 +44,9 @@ app.use(express.urlencoded({ extended: false }));
 // cookies for sessions
 app.use(cookieParser());
 
+app.use("/.well-known/acme-challenge/:content", function(req, res) {
+  res.send("xxxxxxxxxxxx-yyyy.zzzzzzzzzzzzzzzzzzz");
+});
 app.use("/api/users/session", sessionRouter);
 app.use("/api/shorts", shortsRouter);
 app.use("/api/users", usersRouter);
