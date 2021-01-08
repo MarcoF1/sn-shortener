@@ -13,7 +13,7 @@ router.get("/", [], async (req, res) => {
   res.redirect("https://sigmanu.mit.edu");
 });
 
-app.get("/.well-known/acme-challenge/:content", function(req, res) {
+router.get("/.well-known/acme-challenge/:content", function(req, res) {
   res.send("xxxxxxxxxxxx-yyyy.zzzzzzzzzzzzzzzzzzz");
 });
 
