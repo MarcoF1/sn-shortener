@@ -13,8 +13,8 @@ router.get("/", [], async (req, res) => {
   res.redirect("https://sigmanu.mit.edu");
 });
 
-router.get("/.well-known/acme-challenge/:content", function(req, res) {
-  res.send("xxxxxxxxxxxx-yyyy.zzzzzzzzzzzzzzzzzzz");
+router.get("/.well-known/acme-challenge/:content", function (req, res) {
+  res.send("xxxxxxxxxxxx-yyyy.zzzzzzzzzzzzzzzzzzz").end();
 });
 
 /**
@@ -35,27 +35,28 @@ router.get("/:name?", [v.ensureValidShortNameParam], async (req, res, next) => {
     const short = await Shorts.findOne(shortName);
 
     if (!short) {
-      res
-        .status(404)
-        .json({
-          error: `Short URL ${shortName} not found.`,
-        })
-        .end();
-      return;
+      // res
+      //   .status(404)
+      //   .json({
+      //     error: `Short URL ${shortName} not found.`,
+      //   })
+      //   .end();
+      res.render("error", { name: shortName });
     }
 
     // if the destination URL of the short is specified,
     // then navigate to it by redirecting
     if (short.url) {
-      res.redirect(short.url);
+      res.redirect(short.url).end();
     } else {
       next();
     }
   } catch (error) {
-    res
-      .status(503)
-      .json({ error: "Could not navigate to desination URL of this short" })
-      .end();
+    // res
+    //   .status(503)
+    //   .json({ error: "Could not navigate to desination URL of this short" })
+    //   .end();
+    res.render("error", { name: req.params.name }).end();
   }
 });
 
