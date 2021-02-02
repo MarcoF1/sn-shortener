@@ -38,7 +38,7 @@ block content
             tbody
               each short in shorts
                 tr 
-                  td(class="edge") /#{short.shortName}
+                  td(class="edge") /#{short.shortname}
                   td(class="center") #{short.url}
                   td(class="edge")                
 
@@ -46,19 +46,20 @@ block content
                       $(document).ready(function () {
                         
                         let short = !{JSON.stringify(short)};
-                        
-                        $(`form#delete${short.shortName}`).on("submit", function (e) {
+                        console.log(short);
+
+                        $(`form#delete${short.shortname}`).on("submit", function (e) {
                           e.preventDefault();
                           $.ajax({
                             type: "delete",
-                            url: `/api/shorts/${short.shortName}`,
+                            url: `/api/shorts/${short.shortname}`,
                           }).done(function (data) {
                             location.reload(true);
                           });
                         });
                       });
 
-                    - var formId = "delete" + short.shortName;
+                    - var formId = "delete" + short.shortname;
                     form(method="post" id=formId class="delete")
                       input(type="submit", value="delete" id="small")
 

@@ -48,7 +48,7 @@ router.post(
     } catch (error) {
       res
         .status(503)
-        .json({ error: "Could not sign user in" })
+        .json({ error: `Could not sign user in: ${error}` })
         .end();
     }
   }
@@ -63,15 +63,9 @@ router.delete("/", [v.ensureUserLoggedIn], async (req, res) => {
   try {
     // sign out user
     req.session.uid = undefined;
-    res
-      .status(200)
-      .json({ message: "Successfuly signed out user!" })
-      .end();
+    res.status(200).json({ message: "Successfuly signed out user!" }).end();
   } catch (error) {
-    res
-      .status(503)
-      .json({ error: "Could not sign user out" })
-      .end();
+    res.status(503).json({ error: "Could not sign user out" }).end();
   }
 });
 
