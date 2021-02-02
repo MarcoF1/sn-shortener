@@ -1,6 +1,6 @@
 const { Pool } = require("pg");
 
-production = false;
+production = true;
 
 // Connect to the db using a pool
 const pool = new Pool({
