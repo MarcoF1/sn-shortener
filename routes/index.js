@@ -10,7 +10,7 @@ const router = express.Router();
  * @name GET /
  */
 router.get("/", [], async (req, res) => {
-  res.redirect("https://sigmanu.mit.edu");
+  res.redirect("http://sigmanu.mit.edu");
 });
 
 router.get("/.well-known/acme-challenge/:content", function (req, res) {
